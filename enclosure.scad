@@ -4,7 +4,7 @@ firstStageHeight=24;
 
 include<../parts/lipoBattHolder.scad>
 include<waterproofBox.scad>
-
+include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 
 
 //constraints : these are the minimal internal dimensions of the box
@@ -65,25 +65,59 @@ battSlotsSpacingY=(insideBoxY1-(nbBattSlots*basicBattHolderWidth)-2*beamsThickne
 
 
 
-mainBox();
+
+
+module electronicsPlate()
+{
     translate([0,0,boxWallsThickness1+firstStageHeight])
     {
-        translate([secondStageDecal,secondStageDecal,0])
-            cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness1]);
-        translate([secondStageDecal,secondStageDecal,0])
-            cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness1]);
-        translate([secondStageDecal,insideBoxY1-beamsThickness1-secondStageDecal,0])
-            cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness1]);
-        translate([insideBoxX1-beamsThickness1-secondStageDecal,secondStageDecal,0])
-            cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness1]);
-        translate([insideBoxX1/2-beamsThickness1-secondStageDecal,secondStageDecal,0])
-            cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness1]);
+        difference()
+        {
+            union()
+            {
+                translate([secondStageDecal,secondStageDecal,0])
+                    cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness2]);
+                translate([secondStageDecal,secondStageDecal,0])
+                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+                translate([secondStageDecal,insideBoxY1-beamsThickness1-secondStageDecal,0])
+                    cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness2]);
+                translate([insideBoxX1-beamsThickness1-secondStageDecal,secondStageDecal,0])
+                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+                translate([insideBoxX1/2-beamsThickness1-secondStageDecal,secondStageDecal,0])
+                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+            }
+            //front
+            translate([beamsThickness2/2,beamsThickness2/2,-beamsThickness2/2])
+                cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
+            translate([beamsThickness2/2,insideBoxY1-beamsThickness2/2,-beamsThickness2/2])
+                cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
+            //middle
+            translate([insideBoxX1/2-beamsThickness2/2,beamsThickness2/2,-beamsThickness2/2])
+                cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
+            translate([insideBoxX1/2-beamsThickness2/2,insideBoxY1-beamsThickness2/2,-beamsThickness2/2])
+                cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
+            //back
+            translate([insideBoxX1-beamsThickness2/2,beamsThickness2/2,-beamsThickness2/2])
+                cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
+            translate([insideBoxX1-beamsThickness2/2,insideBoxY1-beamsThickness2/2,-beamsThickness2/2])
+                cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
+        }
+        
+        piSupportSpacingX=5+secondStageDecal;
+        piSupportSpacingY=(insideBoxY1-beamsThickness2*2-chassisY)/2;
+        
+        translate([piSupportSpacingX,beamsThickness2+piSupportSpacingY,0])
+        color([1,0.5,0])
+            piSupport2(1,1,h0);
+        translate([piSupportSpacingX+chassisX+2,secondStageDecal,0])
+                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+        
     }
+}   
     
+    mainBox();
     
-    
-    
-    
+    electronicsPlate();
     
     
     
