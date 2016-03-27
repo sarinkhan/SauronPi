@@ -10,7 +10,7 @@ include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
 insideBoxMinY=60+2*beamsThickness2;
-insideBoxMinZ=60;
+insideBoxMinZ=65;
 
 
 
@@ -30,10 +30,62 @@ screwHoles1Radius=3/2;
 
 secondStageDecal=0.5;
 
+
+cameraHoleRadius=20/2;
+cameraHoleZDecal=5;
+cameraSkirtSupportThickness=7;
+cameraSkirtSupportBaseWidth=cameraHoleRadius*2+20;
+cameraSkirtSupportBaseHeight=cameraSkirtSupportBaseWidth;
+cameraSkirtSupportDecalY=(cameraSkirtSupportBaseWidth-cameraHoleRadius*2)/2;
+cameraSkirtSupportDecalZ=(cameraSkirtSupportBaseHeight-cameraHoleRadius*2)/2;
+cameraSkirtSupportScrewHolesDistFromEdge=4;
+
+cameraHole=1; //set to 1 for a camera hole, 0 for no hole
+
+
+module cameraSkirtBaseShape()
+{
+                   difference()
+                {
+                    cube([cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight]);   
+                    translate([-cameraSkirtSupportThickness/2,cameraSkirtSupportScrewHolesDistFromEdge,cameraSkirtSupportScrewHolesDistFromEdge])
+                        rotate([0,90,0])
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                    translate([-cameraSkirtSupportThickness/2,cameraSkirtSupportBaseWidth-cameraSkirtSupportScrewHolesDistFromEdge,cameraSkirtSupportScrewHolesDistFromEdge])
+                        rotate([0,90,0])
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                    translate([-cameraSkirtSupportThickness/2, cameraSkirtSupportScrewHolesDistFromEdge, cameraSkirtSupportBaseHeight-cameraSkirtSupportScrewHolesDistFromEdge])
+                        rotate([0,90,0])
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                    translate([-cameraSkirtSupportThickness/2, cameraSkirtSupportBaseWidth-cameraSkirtSupportScrewHolesDistFromEdge, cameraSkirtSupportBaseHeight-cameraSkirtSupportScrewHolesDistFromEdge])
+                        rotate([0,90,0])
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                }
+}
+
 module mainBox()
 {
 
-boxWithLidAndBeams();
+difference()
+{
+    union()
+    {
+        boxWithLidAndBeams();
+         if(cameraHole==1)
+        {
+            translate([-boxWallsThickness1-cameraSkirtSupportThickness,insideBoxY1/2-cameraHoleRadius-cameraSkirtSupportDecalY,firstStageHeight+cameraHoleZDecal+beamsThickness2-cameraSkirtSupportDecalZ])
+            {
+                cameraSkirtBaseShape();
+            }
+        }
+    }
+    if(cameraHole==1)
+    {
+        translate([-boxWallsThickness1*2-cameraSkirtSupportThickness,0+insideBoxY1/2,firstStageHeight+cameraHoleZDecal+cameraHoleRadius+beamsThickness2])
+            rotate([0,90,0])
+                cylinder(r=cameraHoleRadius,h=boxWallsThickness1*4+cameraSkirtSupportThickness*2,$fn=64);
+    }
+}
 
 maxBattSlots=floor((insideBoxY1-2*beamsThickness2)/basicBattHolderWidth);
 nbBattSlots=maxBattSlots;
@@ -116,13 +168,14 @@ module electronicsPlate()
 }   
     
     mainBox();
-    
     electronicsPlate();
     
     
     
-    
-    
+    //gasket();
+    /*translate([0,0,+insideBoxZ1+2])
+    flatBoxLid();
+    */
     
     
     
