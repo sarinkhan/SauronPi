@@ -10,7 +10,7 @@ include<waterproofBox.scad>
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
 insideBoxMinY=60+2*beamsThickness2;
-insideBoxMinZ=40;
+insideBoxMinZ=60;
 
 
 
@@ -24,17 +24,19 @@ insideBoxZ1=insideBoxMinZ+0;
 //basicBattHolderWidth
 boxWallsThickness1=1;
 boxSealingLipWidth=10;
-
-
-
 screwHoles1Radius=3/2;
+
+
+
+secondStageDecal=0.5;
+
+module mainBox()
+{
 
 boxWithLidAndBeams();
 
 maxBattSlots=floor((insideBoxY1-2*beamsThickness2)/basicBattHolderWidth);
 nbBattSlots=maxBattSlots;
-
-
 
 
 battSlotsSpacingY=(insideBoxY1-(nbBattSlots*basicBattHolderWidth)-2*beamsThickness2)/nbBattSlots;
@@ -50,10 +52,33 @@ battSlotsSpacingY=(insideBoxY1-(nbBattSlots*basicBattHolderWidth)-2*beamsThickne
     translate([0,insideBoxY1-beamsThickness2,boxWallsThickness1])
             fixationPillar(beamsThickness1,firstStageHeight,screwHoles1Radius);
     
+    translate([insideBoxX1/2-beamsThickness2,0,boxWallsThickness1])
+            fixationPillar(beamsThickness1,firstStageHeight,screwHoles1Radius);
+    translate([insideBoxX1/2-beamsThickness2,insideBoxY1-beamsThickness2,boxWallsThickness1])
+            fixationPillar(beamsThickness1,firstStageHeight,screwHoles1Radius);
+    
     translate([insideBoxX1-beamsThickness2,0,boxWallsThickness1])
             fixationPillar(beamsThickness1,firstStageHeight,screwHoles1Radius);
     translate([insideBoxX1-beamsThickness2,insideBoxY1-beamsThickness2,boxWallsThickness1])
             fixationPillar(beamsThickness1,firstStageHeight,screwHoles1Radius);
+}    
+
+
+
+mainBox();
+    translate([0,0,boxWallsThickness1+firstStageHeight])
+    {
+        translate([secondStageDecal,secondStageDecal,0])
+            cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness1]);
+        translate([secondStageDecal,secondStageDecal,0])
+            cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness1]);
+        translate([secondStageDecal,insideBoxY1-beamsThickness1-secondStageDecal,0])
+            cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness1]);
+        translate([insideBoxX1-beamsThickness1-secondStageDecal,secondStageDecal,0])
+            cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness1]);
+        translate([insideBoxX1/2-beamsThickness1-secondStageDecal,secondStageDecal,0])
+            cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness1]);
+    }
     
     
     
