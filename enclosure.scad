@@ -10,7 +10,7 @@ include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
 insideBoxMinY=75+2*beamsThickness2;
-insideBoxMinZ=65;
+insideBoxMinZ=70;
 
 
 
@@ -187,7 +187,7 @@ module electronicsPlate()
 }   
     
     mainBox();
-    electronicsPlate();
+    //electronicsPlate();
     
     
     
