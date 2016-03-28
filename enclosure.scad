@@ -1,6 +1,6 @@
 battSlotsSpacingX=1;
 beamsThickness2=5;
-firstStageHeight=24;
+firstStageHeight=28;
 
 include<../parts/lipoBattHolder.scad>
 include<waterproofBox.scad>
@@ -9,14 +9,14 @@ include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
-insideBoxMinY=60+2*beamsThickness2;
+insideBoxMinY=75+2*beamsThickness2;
 insideBoxMinZ=65;
 
 
 
 
 //if you want to alter the box size, change the values here, keeping the min sizes and adding a value : 
-insideBoxX1=insideBoxMinX+battSlotsSpacingX*2+20;
+insideBoxX1=insideBoxMinX+battSlotsSpacingX*2+25;
 insideBoxY1=insideBoxMinY+0;
 insideBoxZ1=insideBoxMinZ+0;
 
@@ -40,7 +40,12 @@ cameraSkirtSupportDecalY=(cameraSkirtSupportBaseWidth-cameraHoleRadius*2)/2;
 cameraSkirtSupportDecalZ=(cameraSkirtSupportBaseHeight-cameraHoleRadius*2)/2;
 cameraSkirtSupportScrewHolesDistFromEdge=4;
 
-cameraHole=1; //set to 1 for a camera hole, 0 for no hole
+cameraHole=1;   //set to 1 for a camera hole, 0 for no hole
+
+buttonsHoles=1; //set to 1 for button holes, 0 for no hole
+buttonsHolesRadius=16.5/2;
+buttonsCount1=3;
+buttonsMargin1=5;
 
 
 module cameraSkirtBaseShape()
@@ -82,8 +87,22 @@ difference()
     if(cameraHole==1)
     {
         translate([-boxWallsThickness1*2-cameraSkirtSupportThickness,0+insideBoxY1/2,firstStageHeight+cameraHoleZDecal+cameraHoleRadius+beamsThickness2])
-            rotate([0,90,0])
+            rotate([0,90,0])                 
                 cylinder(r=cameraHoleRadius,h=boxWallsThickness1*4+cameraSkirtSupportThickness*2,$fn=64);
+    }
+    
+    //buttonDecalY*i+buttonsHolesRadius+buttonsHolesRadius*2*(i-1)
+    buttonDecalY=(insideBoxY1-buttonsHolesRadius*2*buttonsCount1-beamsThickness*2 - buttonsMargin1*2)/buttonsCount1;
+    if(buttonsHoles==1)
+    {
+        for(i = [0 : 1 : buttonsCount1-1])
+        {
+            translate([insideBoxX1-boxWallsThickness1*2, beamsThickness2+buttonsHolesRadius+buttonDecalY*i  +buttonsHolesRadius*2*(i)+buttonsMargin1,buttonsHolesRadius+boxWallsThickness1+buttonsMargin1])
+                rotate([0,90,0])                 
+                cylinder(r=buttonsHolesRadius,h=boxWallsThickness1*4,$fn=64);
+        }
+
+            
     }
 }
 
