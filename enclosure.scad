@@ -7,9 +7,11 @@ include<waterproofBox.scad>
 include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 
 
+
+
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
-insideBoxMinY=75+2*beamsThickness2;
+insideBoxMinY=80+2*beamsThickness2;
 insideBoxMinZ=70;
 
 
@@ -21,9 +23,18 @@ insideBoxY1=insideBoxMinY+0;
 insideBoxZ1=insideBoxMinZ+0;
 
 
+
+
+echo ("inside box X : ");
+echo(insideBoxX1);
+echo ("inside box Y : ");
+echo(insideBoxY1);
+echo ("inside box Z : ");
+echo(insideBoxZ1);
+
 //basicBattHolderWidth
 boxWallsThickness1=1;
-boxSealingLipWidth=10;
+boxSealingLipWidth=beamsThickness2;
 screwHoles1Radius=3/2;
 
 
@@ -47,6 +58,9 @@ buttonsHolesRadius=16.5/2;
 buttonsCount1=3;
 buttonsMargin1=5;
 
+totalBoundingBoxX=insideBoxX1+2*boxWallsThickness1+2*boxSealingLipWidth;
+totalBoundingBoxY=insideBoxY1+2*boxWallsThickness1+2*boxSealingLipWidth;
+totalBoundingBoxZ=insideBoxZ1+boxWallsThickness1+0;//define
 
 module cameraSkirtBaseShape()
 {
@@ -81,6 +95,9 @@ difference()
             translate([-boxWallsThickness1-cameraSkirtSupportThickness,insideBoxY1/2-cameraHoleRadius-cameraSkirtSupportDecalY,firstStageHeight+cameraHoleZDecal+beamsThickness2-cameraSkirtSupportDecalZ])
             {
                 cameraSkirtBaseShape();
+                translate([cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,0])
+            rotate([90,-180,0])
+                triangleSupport(cameraSkirtSupportThickness,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth);
             }
         }
     }
@@ -135,7 +152,23 @@ battSlotsSpacingY=(insideBoxY1-(nbBattSlots*basicBattHolderWidth)-2*beamsThickne
 }    
 
 
+cameraPiCameraAxisZ=14;
+cameraSupportX=3;
+cameraSupportY=25;
+cameraSupportZ=24;
+cameraSupportZ=cameraPiCameraAxisZ;
+cameraSupportBeamsY=7;
 
+cameraSupportBaseX=beamsThickness2;
+cameraSupportBaseZ=cameraHoleZDecal+cameraHoleRadius-cameraPiCameraAxisZ;
+module cameraSupport()
+{
+    cube([cameraSupportBaseX,cameraSupportY,cameraSupportBaseZ]);
+    translate([0,0,cameraSupportBaseZ])
+    cube([cameraSupportX,cameraSupportBeamsY,cameraSupportZ]);
+    translate([0,cameraSupportY-cameraSupportBeamsY,cameraSupportBaseZ])
+    cube([cameraSupportX,cameraSupportBeamsY,cameraSupportZ]);
+}
 
 
 module electronicsPlate()
@@ -147,15 +180,15 @@ module electronicsPlate()
             union()
             {
                 translate([secondStageDecal,secondStageDecal,0])
-                    cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness2]);
+                    cube([insideBoxX1-2*secondStageDecal,beamsThickness2,beamsThickness2]);
                 translate([secondStageDecal,secondStageDecal,0])
-                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
-                translate([secondStageDecal,insideBoxY1-beamsThickness1-secondStageDecal,0])
+                    cube([beamsThickness2,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+                translate([secondStageDecal,insideBoxY1-beamsThickness2-secondStageDecal,0])
                     cube([insideBoxX1-2*secondStageDecal,beamsThickness1,beamsThickness2]);
-                translate([insideBoxX1-beamsThickness1-secondStageDecal,secondStageDecal,0])
-                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
-                translate([insideBoxX1/2-beamsThickness1-secondStageDecal,secondStageDecal,0])
-                    cube([beamsThickness1,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+                translate([insideBoxX1-beamsThickness2-secondStageDecal,secondStageDecal,0])
+                    cube([beamsThickness2,insideBoxY1-2*secondStageDecal,beamsThickness2]);
+                translate([insideBoxX1/2-beamsThickness2-secondStageDecal,secondStageDecal,0])
+                    cube([beamsThickness2,insideBoxY1-2*secondStageDecal,beamsThickness2]);
             }
             //front
             translate([beamsThickness2/2,beamsThickness2/2,-beamsThickness2/2])
@@ -174,6 +207,8 @@ module electronicsPlate()
                 cylinder(r=screwHoles1Radius, h=beamsThickness2*2,$fn=12);
         }
         
+        translate([0,(insideBoxY1-cameraSupportY)/2,beamsThickness2])
+        cameraSupport();
         piSupportSpacingX=5+secondStageDecal;
         piSupportSpacingY=(insideBoxY1-beamsThickness2*2-chassisY)/2;
         
@@ -186,15 +221,17 @@ module electronicsPlate()
     }
 }   
     
-    mainBox();
-    //electronicsPlate();
+mainBox();
+
+electronicsPlate();
     
     
     
-    //gasket();
-    /*translate([0,0,+insideBoxZ1+2])
-    flatBoxLid();
-    */
+//gasket();
+
+//translate([0,0,+insideBoxZ1+2])
+//flatBoxLid();
+
     
     
     
