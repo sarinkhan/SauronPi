@@ -156,18 +156,41 @@ cameraPiCameraAxisZ=14;
 cameraSupportX=3;
 cameraSupportY=25;
 cameraSupportZ=24;
-cameraSupportZ=cameraPiCameraAxisZ;
+//cameraSupportZ=cameraPiCameraAxisZ;
 cameraSupportBeamsY=7;
+cameraHolesRadius=2/2;
+cameraHolesDistFromEdge=1.5;
+cameraHoles1DistFromBottom=1.5;
+cameraHoles2DistFromBottom=cameraPiCameraAxisZ;
 
 cameraSupportBaseX=beamsThickness2;
 cameraSupportBaseZ=cameraHoleZDecal+cameraHoleRadius-cameraPiCameraAxisZ;
 module cameraSupport()
 {
-    cube([cameraSupportBaseX,cameraSupportY,cameraSupportBaseZ]);
-    translate([0,0,cameraSupportBaseZ])
-    cube([cameraSupportX,cameraSupportBeamsY,cameraSupportZ]);
-    translate([0,cameraSupportY-cameraSupportBeamsY,cameraSupportBaseZ])
-    cube([cameraSupportX,cameraSupportBeamsY,cameraSupportZ]);
+    difference()
+    {
+        union()
+        {
+            cube([cameraSupportBaseX,cameraSupportY,cameraSupportBaseZ]);
+            translate([0,0,cameraSupportBaseZ])
+            cube([cameraSupportX,cameraSupportBeamsY,cameraSupportZ]);
+            translate([0,cameraSupportY-cameraSupportBeamsY,cameraSupportBaseZ])
+            cube([cameraSupportX,cameraSupportBeamsY,cameraSupportZ]);
+        }
+                translate([-cameraSupportBaseX/2, cameraHolesDistFromEdge, cameraSupportBaseZ+cameraHoles1DistFromBottom])
+            rotate([0,90,0])
+                cylinder(r=cameraHolesRadius,h=cameraSupportBaseX*2,$fn=64);
+        translate([-cameraSupportBaseX/2, cameraSupportY-cameraHolesDistFromEdge, cameraSupportBaseZ+cameraHoles1DistFromBottom])
+            rotate([0,90,0])
+                cylinder(r=cameraHolesRadius,h=cameraSupportBaseX*2,$fn=64);
+        
+        translate([-cameraSupportBaseX/2, cameraHolesDistFromEdge, cameraSupportBaseZ+cameraHoles2DistFromBottom])
+            rotate([0,90,0])
+                cylinder(r=cameraHolesRadius,h=cameraSupportBaseX*2,$fn=64);
+        translate([-cameraSupportBaseX/2, cameraSupportY-cameraHolesDistFromEdge, cameraSupportBaseZ+cameraHoles2DistFromBottom])
+            rotate([0,90,0])
+                cylinder(r=cameraHolesRadius,h=cameraSupportBaseX*2,$fn=64);
+    }
 }
 
 
@@ -222,7 +245,6 @@ module electronicsPlate()
 }   
     
 mainBox();
-
 electronicsPlate();
     
     
