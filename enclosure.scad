@@ -159,9 +159,9 @@ cameraSupportZ=24;
 //cameraSupportZ=cameraPiCameraAxisZ;
 cameraSupportBeamsY=7;
 cameraHolesRadius=2/2;
-cameraHolesDistFromEdge=1.5;
-cameraHoles1DistFromBottom=1.5;
-cameraHoles2DistFromBottom=cameraPiCameraAxisZ;
+cameraHolesDistFromEdge=2;
+cameraHoles1DistFromBottom=2;
+cameraHoles2DistFromBottom=cameraHoles1DistFromBottom+12.5;
 
 cameraSupportBaseX=beamsThickness2;
 cameraSupportBaseZ=cameraHoleZDecal+cameraHoleRadius-cameraPiCameraAxisZ;
