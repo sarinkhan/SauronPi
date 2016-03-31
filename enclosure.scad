@@ -11,7 +11,7 @@ include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
-insideBoxMinY=80+2*beamsThickness2;
+insideBoxMinY=83+2*beamsThickness2;
 insideBoxMinZ=70;
 
 
@@ -62,25 +62,73 @@ totalBoundingBoxX=insideBoxX1+2*boxWallsThickness1+2*boxSealingLipWidth;
 totalBoundingBoxY=insideBoxY1+2*boxWallsThickness1+2*boxSealingLipWidth;
 totalBoundingBoxZ=insideBoxZ1+boxWallsThickness1+0;//define
 
+
+frontOpeningRadius=buttonsHolesRadius;
+frontOpeningsPlateX=cameraSkirtSupportThickness;
+frontOpeningsPlateY=frontOpeningRadius*2+10;
+frontOpeningsPlateZ=frontOpeningsPlateY;
+frontOpeningsholesDistFromEdge=3;
+frontOpening1=1;
+frontOpening2=1;
+frontOpeningDecalZ=firstStageHeight+beamsThickness2;
+
+/**
+ * This module constructs a circular opening with a support base, and 4 screwholes in each corner
+ */
+module openingWithSupport1(centralOpeningRadius=buttonsHolesRadius,frFixHolesRad=screwHoles1Radius,baseX,baseY,baseZ,holesDistFromEdge)
+{
+    difference()
+    {
+        cube([baseX,baseY,baseZ]);
+        translate([-baseX/2,baseY/2,baseZ/2])
+            rotate([0,90,0])
+                cylinder(r=centralOpeningRadius,h=baseX*2,$fn=64);
+        
+       translate([-baseX/2,holesDistFromEdge,holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+       translate([-baseX/2,baseY-holesDistFromEdge,holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+       translate([-baseX/2,holesDistFromEdge,baseZ-holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+       translate([-baseX/2,baseY-holesDistFromEdge,baseZ-holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+    }
+}
+module openingWithSupport1WithSlope(centralOpeningRadius=buttonsHolesRadius,frFixHolesRad=screwHoles1Radius,baseX,baseY,baseZ,holesDistFromEdge)
+{
+   openingWithSupport1(centralOpeningRadius,frFixHolesRad,baseX,baseY,baseZ,holesDistFromEdge);
+    translate([baseX,baseY,0])
+            rotate([90,-180,0])
+                triangleSupport(baseX,baseX,baseY);
+    
+}
+
+
 module cameraSkirtBaseShape()
 {
-                   difference()
-                {
+    difference()
+    {
                     cube([cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight]);   
                     translate([-cameraSkirtSupportThickness/2,cameraSkirtSupportScrewHolesDistFromEdge,cameraSkirtSupportScrewHolesDistFromEdge])
                         rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
                     translate([-cameraSkirtSupportThickness/2,cameraSkirtSupportBaseWidth-cameraSkirtSupportScrewHolesDistFromEdge,cameraSkirtSupportScrewHolesDistFromEdge])
                         rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
                     translate([-cameraSkirtSupportThickness/2, cameraSkirtSupportScrewHolesDistFromEdge, cameraSkirtSupportBaseHeight-cameraSkirtSupportScrewHolesDistFromEdge])
                         rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
                     translate([-cameraSkirtSupportThickness/2, cameraSkirtSupportBaseWidth-cameraSkirtSupportScrewHolesDistFromEdge, cameraSkirtSupportBaseHeight-cameraSkirtSupportScrewHolesDistFromEdge])
                         rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=64);
-                }
+                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
+    }
 }
+
+
 
 module mainBox()
 {
@@ -100,6 +148,17 @@ difference()
                 triangleSupport(cameraSkirtSupportThickness,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth);
             }
         }
+        
+        if (frontOpening1==1)
+            {
+                translate([-frontOpeningsPlateX-boxWallsThickness1,0,frontOpeningDecalZ])
+                openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
+            }
+        if (frontOpening2==1)
+            {
+                translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,frontOpeningDecalZ])
+                openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
+            }
     }
     if(cameraHole==1)
     {
@@ -107,6 +166,22 @@ difference()
             rotate([0,90,0])                 
                 cylinder(r=cameraHoleRadius,h=boxWallsThickness1*4+cameraSkirtSupportThickness*2,$fn=64);
     }
+    if (frontOpening1==1)
+            {
+                translate([-boxWallsThickness1*2,frontOpeningsPlateY/2,frontOpeningDecalZ+frontOpeningsPlateY/2])
+                    rotate([0,90,0])
+                        cylinder(r=frontOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
+            }
+        if (frontOpening2==1)
+            {
+                /*translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,firstStageHeight])
+                openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);*/
+               translate([-boxWallsThickness1*2,insideBoxY1-frontOpeningsPlateY/2,frontOpeningDecalZ+frontOpeningsPlateY/2])
+                    rotate([0,90,0])
+                        cylinder(r=frontOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64); 
+            }
+    
+    
     
     //buttonDecalY*i+buttonsHolesRadius+buttonsHolesRadius*2*(i-1)
     buttonDecalY=(insideBoxY1-buttonsHolesRadius*2*buttonsCount1-beamsThickness*2 - buttonsMargin1*2)/buttonsCount1;
@@ -160,7 +235,7 @@ cameraSupportZ=24;
 cameraSupportBeamsY=7;
 cameraHolesRadius=2/2;
 cameraHolesDistFromEdge=2;
-cameraHoles1DistFromBottom=2;
+cameraHoles1DistFromBottom=2+0.5;
 cameraHoles2DistFromBottom=cameraHoles1DistFromBottom+12.5;
 
 cameraSupportBaseX=beamsThickness2;
