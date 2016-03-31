@@ -12,7 +12,7 @@ include<../parts/rpiPlate5_halfFlatMount_mod.scad>
 //constraints : these are the minimal internal dimensions of the box
 insideBoxMinX=basicBattHolderLength;
 insideBoxMinY=83+2*beamsThickness2;
-insideBoxMinZ=70;
+insideBoxMinZ=72;
 
 
 
@@ -70,7 +70,19 @@ frontOpeningsPlateZ=frontOpeningsPlateY;
 frontOpeningsholesDistFromEdge=3;
 frontOpening1=1;
 frontOpening2=1;
-frontOpeningDecalZ=firstStageHeight+beamsThickness2;
+frontOpeningDecalZ=firstStageHeight+beamsThickness2+5;
+
+
+
+sideOpeningRadius=frontOpeningRadius;
+sideOpeningsPlateX=frontOpeningsPlateX;
+sideOpeningsPlateY=frontOpeningsPlateY;
+sideOpeningsPlateZ=frontOpeningsPlateZ;
+sideOpeningsholesDistFromEdge=frontOpeningsholesDistFromEdge;
+sideOpening1=1;
+sideOpening2=1;
+sideOpeningDecalZ=frontOpeningDecalZ;
+
 
 /**
  * This module constructs a circular opening with a support base, and 4 screwholes in each corner
@@ -149,16 +161,35 @@ difference()
             }
         }
         
-        if (frontOpening1==1)
+        //the two front openings that can be used for LED (like a flash), buttons or anything else)
+            if (frontOpening1==1)
             {
                 translate([-frontOpeningsPlateX-boxWallsThickness1,0,frontOpeningDecalZ])
                 openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
             }
-        if (frontOpening2==1)
+            
+            if (frontOpening2==1)
             {
                 translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,frontOpeningDecalZ])
                 openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
             }
+            
+            if (sideOpening1==1)
+            {
+                translate([insideBoxX1-beamsThickness2+boxWallsThickness1,-sideOpeningsPlateX-boxWallsThickness1,frontOpeningDecalZ])
+                    rotate([0,0,90])
+                        openingWithSupport1WithSlope(sideOpeningRadius,screwHoles1Radius,sideOpeningsPlateX,sideOpeningsPlateY,sideOpeningsPlateZ,sideOpeningsholesDistFromEdge);
+            }
+            
+            if (sideOpening2==1)
+            {
+                translate([insideBoxX1-beamsThickness2+boxWallsThickness1-sideOpeningsPlateY,insideBoxY1+sideOpeningsPlateX+boxWallsThickness1,frontOpeningDecalZ])
+                    rotate([0,0,270])
+                        openingWithSupport1WithSlope(sideOpeningRadius,screwHoles1Radius,sideOpeningsPlateX,sideOpeningsPlateY,sideOpeningsPlateZ,sideOpeningsholesDistFromEdge);
+            }
+            
+            
+            
     }
     if(cameraHole==1)
     {
@@ -167,21 +198,33 @@ difference()
                 cylinder(r=cameraHoleRadius,h=boxWallsThickness1*4+cameraSkirtSupportThickness*2,$fn=64);
     }
     if (frontOpening1==1)
-            {
-                translate([-boxWallsThickness1*2,frontOpeningsPlateY/2,frontOpeningDecalZ+frontOpeningsPlateY/2])
-                    rotate([0,90,0])
-                        cylinder(r=frontOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
-            }
-        if (frontOpening2==1)
-            {
-                /*translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,firstStageHeight])
-                openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);*/
-               translate([-boxWallsThickness1*2,insideBoxY1-frontOpeningsPlateY/2,frontOpeningDecalZ+frontOpeningsPlateY/2])
-                    rotate([0,90,0])
-                        cylinder(r=frontOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64); 
-            }
+    {
+        translate([-boxWallsThickness1*2,frontOpeningsPlateY/2,frontOpeningDecalZ+frontOpeningsPlateY/2])
+            rotate([0,90,0])
+                cylinder(r=frontOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
+        }
+    if (frontOpening2==1)
+    {
+        translate([-boxWallsThickness1*2,insideBoxY1-frontOpeningsPlateY/2,frontOpeningDecalZ+frontOpeningsPlateY/2])
+            rotate([0,90,0])
+                cylinder(r=frontOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64); 
+    }
     
+    if (sideOpening1==1)
+    {
+        translate([insideBoxX1-beamsThickness2+boxWallsThickness1-sideOpeningsPlateY/2,-sideOpeningsPlateX-boxWallsThickness1,frontOpeningDecalZ+sideOpeningsPlateZ/2])
+            rotate([270,0,00])
+                cylinder(r=sideOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
+    }
+            
+    if (sideOpening2==1)
+    {
+        translate([insideBoxX1-beamsThickness2+boxWallsThickness1-sideOpeningsPlateY/2,insideBoxY1+sideOpeningsPlateX+boxWallsThickness1,frontOpeningDecalZ+sideOpeningsPlateZ/2])
+            rotate([90,00,0])
+                cylinder(r=sideOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
+    }
     
+ 
     
     //buttonDecalY*i+buttonsHolesRadius+buttonsHolesRadius*2*(i-1)
     buttonDecalY=(insideBoxY1-buttonsHolesRadius*2*buttonsCount1-beamsThickness*2 - buttonsMargin1*2)/buttonsCount1;
