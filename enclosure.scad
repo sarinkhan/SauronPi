@@ -243,6 +243,9 @@ difference()
                     rotate([0,0,180])
                     openingWithSupport1(backOpeningRadius,screwHoles1Radius,backOpeningsPlateX,backOpeningsPlateY,backOpeningsPlateZ,backOpeningsholesDistFromEdge);
                 }
+                
+                translate([insideBoxX1+boxWallsThickness1,backOpeningsDecalY+beamsThickness,0])
+                    cube([backOpeningsPlateX,backOpenings2Count*backOpeningsPlateY,backOpening2DecalZ]);
             }
             
             
