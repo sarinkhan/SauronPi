@@ -88,6 +88,15 @@ sideOpening2=1;
 sideOpeningDecalZ=frontOpeningDecalZ;
 
 
+backOpenings1=1;
+backOpeningsCount=3;
+backOpeningRadius=frontOpeningRadius;
+backOpeningsPlateX=frontOpeningsPlateX;
+backOpeningsPlateY=frontOpeningsPlateY;
+backOpeningsPlateZ=frontOpeningsPlateZ;
+backOpeningsholesDistFromEdge=frontOpeningsholesDistFromEdge;
+backOpeningDecalZ=frontOpeningDecalZ;
+
 
 
 /**
@@ -151,6 +160,15 @@ module cameraSkirtBaseShape()
 }
 
 
+module cameraSkirtBaseShapeWithSlope()
+{
+    cameraSkirtBaseShape();
+    translate([cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,0])
+            rotate([90,-180,0])
+                triangleSupport(cameraSkirtSupportThickness,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth);
+}
+
+
 
 module mainBox()
 {
@@ -164,10 +182,7 @@ difference()
         {
             translate([-boxWallsThickness1-cameraSkirtSupportThickness,insideBoxY1/2-cameraHoleRadius-cameraSkirtSupportDecalY,firstStageHeight+cameraHoleZDecal+beamsThickness2-cameraSkirtSupportDecalZ])
             {
-                cameraSkirtBaseShape();
-                translate([cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,0])
-            rotate([90,-180,0])
-                triangleSupport(cameraSkirtSupportThickness,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth);
+                cameraSkirtBaseShapeWithSlope();
             }
         }
         
@@ -182,11 +197,9 @@ difference()
             {
                 translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,frontOpeningDecalZ])
                 openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
-                
-                /*translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,frontOpeningDecalZ])
-                openingLid(screwHoles1Radius,frontOpeningsLidThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);*/
             }
             
+        //the side openings
             if (sideOpening1==1)
             {
                 translate([insideBoxX1-beamsThickness2+boxWallsThickness1,-sideOpeningsPlateX-boxWallsThickness1,frontOpeningDecalZ])
@@ -200,6 +213,21 @@ difference()
                     rotate([0,0,270])
                         openingWithSupport1WithSlope(sideOpeningRadius,screwHoles1Radius,sideOpeningsPlateX,sideOpeningsPlateY,sideOpeningsPlateZ,sideOpeningsholesDistFromEdge);
             }
+            
+            backOpeningsCount=3;
+            backOpeningsDecalY=(insideBoxY1-backOpeningsPlateY*backOpeningsCount-beamsThickness*2)/2;
+            if (backOpenings1==1)
+            {
+                for(i = [1 : 1 : backOpeningsCount])
+                {
+                    translate([insideBoxX1+backOpeningsPlateX+boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness,frontOpeningDecalZ])
+                    rotate([0,0,180])
+                    openingWithSupport1WithSlope(backOpeningRadius,screwHoles1Radius,backOpeningsPlateX,backOpeningsPlateY,backOpeningsPlateZ,backOpeningsholesDistFromEdge);
+                }
+            }
+            
+            
+            
             
             
             
@@ -237,6 +265,9 @@ difference()
                 cylinder(r=sideOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
     }
     
+
+   
+    
  
     
     //buttonDecalY*i+buttonsHolesRadius+buttonsHolesRadius*2*(i-1)
@@ -249,8 +280,6 @@ difference()
                 rotate([0,90,0])                 
                 cylinder(r=buttonsHolesRadius,h=boxWallsThickness1*4,$fn=64);
         }
-
-            
     }
 }
 
