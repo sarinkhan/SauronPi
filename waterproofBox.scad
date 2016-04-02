@@ -15,13 +15,27 @@ beamsThickness1=5;
 
 screwHoles1Radius=3/2;
 
+boxLipThickness=2;
+
+module triangleSupport(c1=10,c2=15,pThick=1)
+{
+    angle=atan(c1/c2);
+    difference()
+    {
+        cube([c1,c2,pThick]);
+        translate([c1,0,-pThick])
+            rotate([0,0,angle])
+                cube([c1*2,c2*2,pThick*3]);
+    }
+}
+
 module fixationPillar(pillarWidth=beamsThickness1,pillarHeight=insideBoxMinZ,pillarScrewRadius=screwHoles1Radius)
 {
     difference()
     {
     cube([pillarWidth,pillarWidth,pillarHeight]);
-        translate([pillarWidth/2,pillarWidth/2,1])
-        cylinder(r=pillarScrewRadius,h=pillarHeight,$fn=12);
+        translate([pillarWidth/2,pillarWidth/2,-pillarHeight/2])
+        cylinder(r=pillarScrewRadius,h=pillarHeight*2,$fn=12);
     } 
 }
 
@@ -48,7 +62,7 @@ translate([0,insideBoxY,0])
 cube([insideBoxX,boxWallsThickness,insideBoxZ+boxWallsThickness]);
 }
 
-module sealingLidShape(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBoxZ=insideBoxZ1,boxWallsThickness=boxWallsThickness1,lipWidth=10,lipThickness=2,nbHolesX=3,nbHolesY=2,holesRadius=3/2, beamsThickness=beamsThickness1)
+module sealingLidShape(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBoxZ=insideBoxZ1,boxWallsThickness=boxWallsThickness1,lipWidth=10,lipThickness=boxLipThickness,nbHolesX=3,nbHolesY=2,holesRadius=3/2, beamsThickness=beamsThickness1)
 {
     
     decalX=(insideBoxX+boxWallsThickness*2-beamsThickness)/(nbHolesX-1);
@@ -94,12 +108,53 @@ module sealingLidShape(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBoxZ=
     
 }
 
-module boxWithLidAndBeams(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBoxZ=insideBoxZ1,boxWallsThickness=boxWallsThickness1,lipWidth=beamsThickness1,lipThickness=2,nbHolesX=3,nbHolesY=2,holesRadius=3/2, beamsThickness=beamsThickness1)
+module boxWithLidAndBeams(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBoxZ=insideBoxZ1,boxWallsThickness=boxWallsThickness1,lipWidth=beamsThickness1,lipThickness=boxLipThickness,nbHolesX=3,nbHolesY=2,holesRadius=3/2, beamsThickness=beamsThickness1)
 {
     sealingLidShape(lipWidth=beamsThickness1);
     topOpenedBox();
     
-      decalX=(insideBoxX+boxWallsThickness*2-beamsThickness)/(nbHolesX-1);
+    externalBoxX=insideBoxX+beamsThickness*2+boxWallsThickness*2;
+    externalBoxY=insideBoxY+beamsThickness*2+boxWallsThickness*2;
+    
+    //front(-x)
+    translate([-boxWallsThickness1,externalBoxY-lipWidth-boxWallsThickness,insideBoxZ1+boxWallsThickness-lipThickness])
+            rotate([90,-180,0])
+                triangleSupport(lipWidth,lipWidth,externalBoxY);
+    //back (+x)
+    translate([insideBoxX1+boxWallsThickness1,-lipWidth-boxWallsThickness,insideBoxZ1+boxWallsThickness-lipThickness])
+            rotate([90,-180,180])
+                triangleSupport(lipWidth,lipWidth,externalBoxY);
+    
+    
+    difference()
+    {
+        union()
+        {
+            //side 1 (-y)
+            translate([-boxWallsThickness,-boxWallsThickness,insideBoxZ1+boxWallsThickness-lipThickness])
+                    rotate([90,-180,90])
+                        triangleSupport(lipWidth,lipWidth,insideBoxX+boxWallsThickness*2);
+            
+            //side 2 (+y)
+            translate([insideBoxX1+boxWallsThickness1,insideBoxY+boxWallsThickness,insideBoxZ1+boxWallsThickness-lipThickness])
+                    rotate([90,-180,270])
+                        triangleSupport(lipWidth,lipWidth,insideBoxX+boxWallsThickness*2);
+        }
+        for(i = [0 : 1 : nbHolesX-1])
+        {
+            translate([-boxWallsThickness+beamsThickness/2+i*decalX,-beamsThickness/2-boxWallsThickness,-1])
+            cylinder(r=holesRadius,h=insideBoxZ1+lipThickness+2,$fn=12);
+        }
+        
+        for(i = [0 : 1 : nbHolesX-1])
+        {
+            translate([-boxWallsThickness+beamsThickness/2+i*decalX, insideBoxY+boxWallsThickness+beamsThickness/2,-1])
+            cylinder(r=holesRadius,h=insideBoxZ1+lipThickness+2,$fn=12);
+        }
+    }
+    
+    
+    decalX=(insideBoxX+boxWallsThickness*2-beamsThickness)/(nbHolesX-1);
     for(i = [0 : 1 : nbHolesX-1])
     {
         translate([-boxWallsThickness+i*decalX,-beamsThickness-boxWallsThickness,0])
@@ -111,6 +166,8 @@ module boxWithLidAndBeams(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBo
         translate([-boxWallsThickness+i*decalX,insideBoxY+boxWallsThickness,0])
             fixationPillar();
     }
+    translate([0,0,-insideBoxZ-boxWallsThickness+lipThickness])
+    sealingLidShape(lipWidth=beamsThickness1);
 }
 
 module gasket(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,insideBoxZ=insideBoxZ1,boxWallsThickness=boxWallsThickness1,lipWidth=beamsThickness1,gasketThickness=1,nbHolesX=3,nbHolesY=2,holesRadius=3/2, beamsThickness=beamsThickness1)
@@ -148,14 +205,11 @@ module flatBoxLid(insideBoxX=insideBoxX1,insideBoxY=insideBoxY1,boxWallsThicknes
 }
 
 
-
-/*translate([0,0,1])
+/*
+translate([0,0,1])
 gasket();
 translate([0,0,+insideBoxZ1+2])
-flatBoxLid();
-*/
-
-
-
+flatBoxLid();*/
+//boxWithLidAndBeams();
 
 

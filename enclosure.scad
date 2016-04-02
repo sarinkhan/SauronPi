@@ -23,6 +23,10 @@ insideBoxY1=insideBoxMinY+0;
 insideBoxZ1=insideBoxMinZ+0;
 
 
+boxSealingLipWidth=8;
+boxLipThickness=2;
+
+
 
 
 echo ("inside box X : ");
@@ -89,13 +93,17 @@ sideOpeningDecalZ=frontOpeningDecalZ;
 
 
 backOpenings1=1;
+backOpenings2=1;
 backOpeningsCount=3;
 backOpeningRadius=frontOpeningRadius;
 backOpeningsPlateX=frontOpeningsPlateX;
 backOpeningsPlateY=frontOpeningsPlateY;
 backOpeningsPlateZ=frontOpeningsPlateZ;
 backOpeningsholesDistFromEdge=frontOpeningsholesDistFromEdge;
-backOpeningDecalZ=frontOpeningDecalZ;
+backOpening1DecalZ=frontOpeningDecalZ;
+backOpening2DecalZ=2;
+backOpenings1Count=3;
+backOpenings2Count=3;
 
 
 
@@ -172,12 +180,13 @@ module cameraSkirtBaseShapeWithSlope()
 
 module mainBox()
 {
-
+            
+            backOpeningsDecalY=(insideBoxY1-backOpeningsPlateY*backOpenings1Count-beamsThickness*2)/2;
 difference()
 {
     union()
     {
-        boxWithLidAndBeams();
+        boxWithLidAndBeams(insideBoxX1,insideBoxY1,insideBoxZ1,boxWallsThickness1,boxSealingLipWidth,boxLipThickness,3,2,screwHoles1Radius, beamsThickness2);
          if(cameraHole==1)
         {
             translate([-boxWallsThickness1-cameraSkirtSupportThickness,insideBoxY1/2-cameraHoleRadius-cameraSkirtSupportDecalY,firstStageHeight+cameraHoleZDecal+beamsThickness2-cameraSkirtSupportDecalZ])
@@ -214,15 +223,25 @@ difference()
                         openingWithSupport1WithSlope(sideOpeningRadius,screwHoles1Radius,sideOpeningsPlateX,sideOpeningsPlateY,sideOpeningsPlateZ,sideOpeningsholesDistFromEdge);
             }
             
-            backOpeningsCount=3;
-            backOpeningsDecalY=(insideBoxY1-backOpeningsPlateY*backOpeningsCount-beamsThickness*2)/2;
+            //top back openings
             if (backOpenings1==1)
             {
-                for(i = [1 : 1 : backOpeningsCount])
+                for(i = [1 : 1 : backOpenings1Count])
                 {
-                    translate([insideBoxX1+backOpeningsPlateX+boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness,frontOpeningDecalZ])
+                    translate([insideBoxX1+backOpeningsPlateX+boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness,backOpening1DecalZ])
                     rotate([0,0,180])
                     openingWithSupport1WithSlope(backOpeningRadius,screwHoles1Radius,backOpeningsPlateX,backOpeningsPlateY,backOpeningsPlateZ,backOpeningsholesDistFromEdge);
+                }
+            }
+            
+            //bottom back openings
+            if (backOpenings2==1)
+            {
+                for(i = [1 : 1 : backOpenings2Count])
+                {
+                    translate([insideBoxX1+backOpeningsPlateX+boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness,backOpening2DecalZ])
+                    rotate([0,0,180])
+                    openingWithSupport1(backOpeningRadius,screwHoles1Radius,backOpeningsPlateX,backOpeningsPlateY,backOpeningsPlateZ,backOpeningsholesDistFromEdge);
                 }
             }
             
@@ -265,13 +284,43 @@ difference()
                 cylinder(r=sideOpeningRadius,h=frontOpeningsPlateX*2+boxWallsThickness1*4,$fn=64);
     }
     
+    if(backOpenings1==1)
+    {
+        for(i = [1 : 1 : backOpenings1Count])
+        {
+            translate([insideBoxX1-boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness - backOpeningsPlateY/2,frontOpeningDecalZ+backOpeningsPlateZ/2])
+            rotate([0,90,0])                 
+                cylinder(r=buttonsHolesRadius,h=boxWallsThickness1*4,$fn=64);
+        }
+    }
+    
+    if(backOpenings1==1)
+    {
+        for(i = [1 : 1 : backOpenings1Count])
+        {
+            translate([insideBoxX1-boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness - backOpeningsPlateY/2,backOpening1DecalZ+backOpeningsPlateZ/2])
+            rotate([0,90,0])                 
+                cylinder(r=buttonsHolesRadius,h=boxWallsThickness1*4,$fn=64);
+        }
+    }
+    
+        if(backOpenings2==1)
+    {
+        for(i = [1 : 1 : backOpenings1Count])
+        {
+            translate([insideBoxX1-boxWallsThickness1,backOpeningsDecalY+backOpeningsPlateY*i+beamsThickness - backOpeningsPlateY/2,backOpening2DecalZ+backOpeningsPlateZ/2])
+            rotate([0,90,0])                 
+                cylinder(r=buttonsHolesRadius,h=boxWallsThickness1*4,$fn=64);
+        }
+    }
+    
 
    
     
  
     
     //buttonDecalY*i+buttonsHolesRadius+buttonsHolesRadius*2*(i-1)
-    buttonDecalY=(insideBoxY1-buttonsHolesRadius*2*buttonsCount1-beamsThickness*2 - buttonsMargin1*2)/buttonsCount1;
+    /*buttonDecalY=(insideBoxY1-buttonsHolesRadius*2*buttonsCount1-beamsThickness*2 - buttonsMargin1*2)/buttonsCount1;
     if(buttonsHoles==1)
     {
         for(i = [0 : 1 : buttonsCount1-1])
@@ -280,7 +329,7 @@ difference()
                 rotate([0,90,0])                 
                 cylinder(r=buttonsHolesRadius,h=boxWallsThickness1*4,$fn=64);
         }
-    }
+    }*/
 }
 
 maxBattSlots=floor((insideBoxY1-2*beamsThickness2)/basicBattHolderWidth);
