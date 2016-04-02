@@ -73,6 +73,10 @@ frontOpening2=1;
 frontOpeningDecalZ=firstStageHeight+beamsThickness2+5;
 
 
+frontOpeningsGasketThickness=1;
+frontOpeningsLidThickness=4;
+
+
 
 sideOpeningRadius=frontOpeningRadius;
 sideOpeningsPlateX=frontOpeningsPlateX;
@@ -82,6 +86,8 @@ sideOpeningsholesDistFromEdge=frontOpeningsholesDistFromEdge;
 sideOpening1=1;
 sideOpening2=1;
 sideOpeningDecalZ=frontOpeningDecalZ;
+
+
 
 
 /**
@@ -119,6 +125,25 @@ module openingWithSupport1WithSlope(centralOpeningRadius=buttonsHolesRadius,frFi
     
 }
 
+module openingLid(frFixHolesRad=screwHoles1Radius,baseX,baseY,baseZ,holesDistFromEdge)
+{
+    difference()
+    {
+        cube([baseX,baseY,baseZ]);
+       translate([-baseX/2,holesDistFromEdge,holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+       translate([-baseX/2,baseY-holesDistFromEdge,holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+       translate([-baseX/2,holesDistFromEdge,baseZ-holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+       translate([-baseX/2,baseY-holesDistFromEdge,baseZ-holesDistFromEdge])
+            rotate([0,90,0])
+                cylinder(r=frFixHolesRad,h=baseX*2,$fn=16);
+    }
+}
 
 module cameraSkirtBaseShape()
 {
@@ -172,6 +197,9 @@ difference()
             {
                 translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,frontOpeningDecalZ])
                 openingWithSupport1WithSlope(frontOpeningRadius,screwHoles1Radius,frontOpeningsPlateX,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
+                
+                /*translate([-frontOpeningsPlateX-boxWallsThickness1,insideBoxY1-frontOpeningsPlateY,frontOpeningDecalZ])
+                openingLid(screwHoles1Radius,frontOpeningsLidThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);*/
             }
             
             if (sideOpening1==1)
@@ -363,8 +391,18 @@ module electronicsPlate()
 }   
     
 mainBox();
-electronicsPlate();
+//electronicsPlate();
     
+
+//front and side openings lids : 
+translate([0,-frontOpeningsPlateY-beamsThickness2-boxWallsThickness1-5,0])
+rotate([0,90,0])
+openingLid(screwHoles1Radius,frontOpeningsLidThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
+
+//front and side openings gaskets : 
+translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
+rotate([0,90,0])
+openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,frontOpeningsGasketThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
     
     
 //gasket();
