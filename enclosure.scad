@@ -147,22 +147,7 @@ module openingLid(frFixHolesRad=screwHoles1Radius,baseX,baseY,baseZ,holesDistFro
 
 module cameraSkirtBaseShape()
 {
-    difference()
-    {
-                    cube([cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight]);   
-                    translate([-cameraSkirtSupportThickness/2,cameraSkirtSupportScrewHolesDistFromEdge,cameraSkirtSupportScrewHolesDistFromEdge])
-                        rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
-                    translate([-cameraSkirtSupportThickness/2,cameraSkirtSupportBaseWidth-cameraSkirtSupportScrewHolesDistFromEdge,cameraSkirtSupportScrewHolesDistFromEdge])
-                        rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
-                    translate([-cameraSkirtSupportThickness/2, cameraSkirtSupportScrewHolesDistFromEdge, cameraSkirtSupportBaseHeight-cameraSkirtSupportScrewHolesDistFromEdge])
-                        rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
-                    translate([-cameraSkirtSupportThickness/2, cameraSkirtSupportBaseWidth-cameraSkirtSupportScrewHolesDistFromEdge, cameraSkirtSupportBaseHeight-cameraSkirtSupportScrewHolesDistFromEdge])
-                        rotate([0,90,0])
-                            cylinder(r=screwHoles1Radius,h=cameraSkirtSupportThickness*2,$fn=16);
-    }
+    openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight,cameraSkirtSupportScrewHolesDistFromEdge);
 }
 
 
