@@ -58,7 +58,7 @@ cameraSkirtSupportScrewHolesDistFromEdge=4;
 cameraHole=1;   //set to 1 for a camera hole, 0 for no hole
 
 buttonsHoles=1; //set to 1 for button holes, 0 for no hole
-buttonsHolesRadius=16.5/2;
+buttonsHolesRadius=16.8/2;
 buttonsCount1=3;
 buttonsMargin1=5;
 
@@ -461,15 +461,18 @@ mainBox();
     
 
 //front and side openings lids : 
-translate([0,-frontOpeningsPlateY-beamsThickness2-boxWallsThickness1-5,0])
+/*translate([0,-frontOpeningsPlateY-beamsThickness2-boxWallsThickness1-5,0])
 rotate([0,90,0])
 openingLid(screwHoles1Radius,frontOpeningsLidThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
+*/
+
 
 //front and side openings gaskets : 
-translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
+//frontOpeningsGasketThickness=7;
+/*translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
 rotate([0,90,0])
 openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,frontOpeningsGasketThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
-    
+  */  
     
 //gasket();
 
