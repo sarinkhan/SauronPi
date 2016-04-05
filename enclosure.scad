@@ -77,7 +77,7 @@ frontOpening2=1;
 frontOpeningDecalZ=firstStageHeight+beamsThickness2+5;
 
 
-frontOpeningsGasketThickness=1;
+frontOpeningsGasketThickness=1.5;
 frontOpeningsLidThickness=4;
 
 
@@ -493,7 +493,7 @@ module electronicsPlate()
         
     }
 }   
-    electronicsPlate();
+    //electronicsPlate();
 //mainBox();
 /*difference()
 {
@@ -511,10 +511,10 @@ openingLid(screwHoles1Radius,frontOpeningsLidThickness,frontOpeningsPlateY,front
 
 //front and side openings gaskets : 
 //frontOpeningsGasketThickness=7;
-/*translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
+translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
 rotate([0,90,0])
 openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,frontOpeningsGasketThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
-  */  
+  
     
 //gasket();
 
