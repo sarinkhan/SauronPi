@@ -167,6 +167,27 @@ module cameraSkirtBaseShape()
     openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight,cameraSkirtSupportScrewHolesDistFromEdge);
 }
 
+module cameraSkirt()
+{
+    cameraSkirtBaseShape();
+    cameraSkirtLength=20;
+    cameraSkirtThickness=1.5;
+    cameraSkirtWidth=cameraHoleRadius*2+5;
+    decalY=(cameraSkirtSupportBaseWidth-cameraSkirtWidth)/2;
+    decalZ=(cameraSkirtSupportBaseHeight-cameraSkirtWidth)/2;
+    translate([-cameraSkirtLength,decalY,decalZ])
+        cube([cameraSkirtLength,cameraSkirtWidth,cameraSkirtThickness]);
+    translate([-cameraSkirtLength,decalY,cameraSkirtSupportBaseHeight-decalZ])
+        cube([cameraSkirtLength,cameraSkirtWidth,cameraSkirtThickness]);
+    translate([-cameraSkirtLength,decalY,decalZ])
+        cube([cameraSkirtLength,cameraSkirtThickness,cameraSkirtWidth]);
+    translate([-cameraSkirtLength,cameraSkirtSupportBaseWidth-decalY,decalZ])
+        cube([cameraSkirtLength,cameraSkirtThickness,cameraSkirtWidth]);
+    
+}
+
+cameraSkirt();
+
 
 module cameraSkirtBaseShapeWithSlope()
 {
