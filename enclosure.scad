@@ -164,29 +164,28 @@ module openingLid(frFixHolesRad=screwHoles1Radius,baseX,baseY,baseZ,holesDistFro
 
 module cameraSkirtBaseShape()
 {
-    openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight,cameraSkirtSupportScrewHolesDistFromEdge);
+    openingWithSupport1(cameraHoleRadius,screwHoles1Radius,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight,cameraSkirtSupportScrewHolesDistFromEdge);
 }
 
 module cameraSkirt()
 {
     cameraSkirtBaseShape();
-    cameraSkirtLength=20;
+    cameraSkirtLength=15;
     cameraSkirtThickness=1.5;
-    cameraSkirtWidth=cameraHoleRadius*2+5;
+    cameraSkirtWidth=buttonsHolesRadius*2+8;
     decalY=(cameraSkirtSupportBaseWidth-cameraSkirtWidth)/2;
     decalZ=(cameraSkirtSupportBaseHeight-cameraSkirtWidth)/2;
-    translate([-cameraSkirtLength,decalY,decalZ])
+    translate([-cameraSkirtLength,decalY-cameraSkirtThickness/2,decalZ-cameraSkirtThickness/2])
         cube([cameraSkirtLength,cameraSkirtWidth,cameraSkirtThickness]);
-    translate([-cameraSkirtLength,decalY,cameraSkirtSupportBaseHeight-decalZ])
+    translate([-cameraSkirtLength,decalY-cameraSkirtThickness/2,cameraSkirtSupportBaseHeight-decalZ-cameraSkirtThickness/2])
         cube([cameraSkirtLength,cameraSkirtWidth,cameraSkirtThickness]);
-    translate([-cameraSkirtLength,decalY,decalZ])
+    translate([-cameraSkirtLength,decalY-cameraSkirtThickness/2,decalZ-cameraSkirtThickness/2])
         cube([cameraSkirtLength,cameraSkirtThickness,cameraSkirtWidth]);
-    translate([-cameraSkirtLength,cameraSkirtSupportBaseWidth-decalY,decalZ])
-        cube([cameraSkirtLength,cameraSkirtThickness,cameraSkirtWidth]);
+    translate([-cameraSkirtLength,cameraSkirtSupportBaseWidth-decalY-cameraSkirtThickness/2,decalZ-cameraSkirtThickness/2])
+        cube([cameraSkirtLength,cameraSkirtThickness,cameraSkirtWidth+cameraSkirtThickness]);
     
 }
 
-cameraSkirt();
 
 
 module cameraSkirtBaseShapeWithSlope()
@@ -515,7 +514,7 @@ module electronicsPlate()
     }
 }   
     //electronicsPlate();
-//mainBox();
+mainBox();
 /*difference()
 {
 electronicsPlate();
@@ -532,10 +531,13 @@ openingLid(screwHoles1Radius,frontOpeningsLidThickness,frontOpeningsPlateY,front
 
 //front and side openings gaskets : 
 //frontOpeningsGasketThickness=7;
-translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
+/*translate([0,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
 rotate([0,90,0])
 openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,frontOpeningsGasketThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
-  
+*/  
+ 
+translate([-boxWallsThickness1-14,26.5,28])
+cameraSkirt();
     
 //gasket();
 
