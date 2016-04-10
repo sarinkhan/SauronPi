@@ -49,6 +49,7 @@ secondStageDecal=0.5;
 cameraHoleRadius=20/2;
 cameraHoleZDecal=5;
 cameraSkirtSupportThickness=7;
+cameraGasketSupportThickness=1.5;
 cameraSkirtSupportBaseWidth=cameraHoleRadius*2+20;
 cameraSkirtSupportBaseHeight=cameraSkirtSupportBaseWidth;
 cameraSkirtSupportDecalY=(cameraSkirtSupportBaseWidth-cameraHoleRadius*2)/2;
@@ -165,6 +166,11 @@ module openingLid(frFixHolesRad=screwHoles1Radius,baseX,baseY,baseZ,holesDistFro
 module cameraSkirtBaseShape()
 {
     openingWithSupport1(cameraHoleRadius,screwHoles1Radius,cameraSkirtSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight,cameraSkirtSupportScrewHolesDistFromEdge);
+}
+
+module cameraSkirtGasket()
+{
+    openingWithSupport1(cameraHoleRadius,screwHoles1Radius,cameraGasketSupportThickness,cameraSkirtSupportBaseWidth,cameraSkirtSupportBaseHeight,cameraSkirtSupportScrewHolesDistFromEdge);
 }
 
 module cameraSkirt()
@@ -536,7 +542,18 @@ rotate([0,90,0])
 openingWithSupport1(buttonsHolesRadius,screwHoles1Radius,frontOpeningsGasketThickness,frontOpeningsPlateY,frontOpeningsPlateZ,frontOpeningsholesDistFromEdge);
 */  
  
+/*
 translate([-boxWallsThickness1-14,26.5,28])
+cameraSkirt();*/
+
+
+
+translate([50,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2,0])
+rotate([0,90,0])
+cameraSkirtGasket();
+
+translate([50,-frontOpeningsPlateY*2-beamsThickness2-boxWallsThickness1-5*2-50,0])
+rotate([0,90,0])
 cameraSkirt();
     
 //gasket();
